@@ -1,38 +1,53 @@
-# Provedor da AWS
-provider "aws" {
-  region  = var.region
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.8.1"
+
+  name = var.aws_vpc_name
+  cidr = var.aws_vpc_cidr
+
+  azs             = var.aws_vpc_azs
+  private_subnets = var.aws_vpc_private_subnets
+  public_subnets  = var.aws_vpc_public_subnets
+
+  enable_nat_gateway = true
+  enable_vpc_gateway = true
+
+  tags = merge(var.aws_project_tags, { "kubernetes.io/cluster/${var.aws_eks_name}" = "shared" })
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.aws_eks_name}}" = "shared"
+    "kubernetes.io/role/elb"                     = 1
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.aws_eks_name}}" = "shared"
+    "kubernetes.io/role/internal-elb"            = 1
+  }
 }
 
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "5.67.0"
+module "eks" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "20.8.5"
+
+  cluster_name    = var.aws_eks_name
+  cluster_version = var.aws_eks_version
+
+  enable_cluster_creator_admin_premissions = true
+
+  subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.private_subnets
+
+  cluster_endpoint_public_access = true
+
+  eks_managged_node_groups = {
+    default = {
+      min_size       = 2
+      max_size       = 2
+      desired_size   = 2
+      instance_types = var.aws_eks_managed_node_groups_instance_types
+      tags           = var.aws_project_tags
     }
   }
-}
 
-# Criação do cluster EKS
-variable "region" {
-  default = "us-east-1"
-}
-
-variable "cluster_name" {
-  default = "shogun-eks-cluster"
-}
-
-resource "aws_eks_cluster" "shogun-eks-cluster" {
-  name     = var.cluster_name
-  role_arn = "arn:aws:iam::342326109351:instance-profile/LabInstanceProfile"
-
-  vpc_config {
-    subnet_ids = ["subnet-08b12ee2b94a5858c", "subnet-0a101f1266c9eac44", "subnet-0b4d0b0ab35c17f9b", "subnet-007d71cbdfb479ac0", "subnet-0c3fe33974de67d07", "subnet-0f31e291536aba412"]
-  }
-
-  # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
-  # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
-  depends_on = [
-    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-    "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  ]
+  tags = var.aws_project_tags
 }
