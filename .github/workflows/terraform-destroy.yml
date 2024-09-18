@@ -21,7 +21,7 @@ jobs:
 
       - name: "Terraform Init"
         working-directory: ./src
-        run: terraform init
+        run: terraform init -backend-config="bucket=shogun-test" -backend-config="teste"
 
       - name: "Terraform destroy"
         working-directory: ./src
