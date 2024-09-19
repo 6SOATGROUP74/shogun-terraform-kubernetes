@@ -6,7 +6,6 @@ module "vpc" {
   cidr = var.aws_vpc_cidr
 
   azs             = var.aws_vpc_azs
-  private_subnets = var.aws_vpc_private_subnets
   public_subnets  = var.aws_vpc_public_subnets
 
   enable_nat_gateway = true
@@ -28,9 +27,6 @@ module "eks" {
   cluster_version = var.aws_eks_version
 
   enable_cluster_creator_admin_permissions = true
-
-  subnet_ids = module.vpc.private_subnets
-  vpc_id     = module.vpc.private_subnets
 
   cluster_endpoint_public_access = true
 
