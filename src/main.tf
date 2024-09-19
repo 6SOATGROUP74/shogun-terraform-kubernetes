@@ -1,53 +1,15 @@
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.13.0"
+resource "aws_eks_cluster" "shogun" {
+  name     = "shogun_cluster"
+  role_arn = "arn:aws:iam::342326109351:role/LabRole"
 
-  name = var.aws_vpc_name
-  cidr = var.aws_vpc_cidr
-
-  azs             = var.aws_vpc_azs
-  private_subnets = var.aws_vpc_private_subnets
-  public_subnets  = var.aws_vpc_public_subnets
-
-  enable_nat_gateway = true
-  enable_vpc_gateway = true
-
-  tags = merge(var.aws_project_tags, { "kubernetes.io/cluster/${var.aws_eks_name}" = "shared" })
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.aws_eks_name}}" = "shared"
-    "kubernetes.io/role/elb"                     = 1
+  vpc_config {
+    subnet_ids = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f"]
   }
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.aws_eks_name}}" = "shared"
-    "kubernetes.io/role/internal-elb"            = 1
-  }
-}
-
-module "eks" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "20.8.5"
-
-  cluster_name    = var.aws_eks_name
-  cluster_version = var.aws_eks_version
-
-  enable_cluster_creator_admin_premissions = true
-
-  subnet_ids = module.vpc.private_subnets
-  vpc_id     = module.vpc.private_subnets
-
-  cluster_endpoint_public_access = true
-
-  eks_managged_node_groups = {
-    default = {
-      min_size       = 2
-      max_size       = 2
-      desired_size   = 2
-      instance_types = var.aws_eks_managed_node_groups_instance_types
-      tags           = var.aws_project_tags
-    }
-  }
-
-  tags = var.aws_project_tags
+  # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
+  # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
+  depends_on = [
+  "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+    "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+  ]
 }
