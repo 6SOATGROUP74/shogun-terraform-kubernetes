@@ -18,11 +18,6 @@ module "vpc" {
     "kubernetes.io/cluster/${var.aws_eks_name}}" = "shared"
     "kubernetes.io/role/elb"                     = 1
   }
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.aws_eks_name}}" = "shared"
-    "kubernetes.io/role/internal-elb"            = 1
-  }
 }
 
 module "eks" {
