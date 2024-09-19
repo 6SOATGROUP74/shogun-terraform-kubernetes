@@ -34,7 +34,7 @@ module "eks" {
 
   cluster_endpoint_public_access = true
 
-  eks_managged_node_groups = {
+  eks_managed_node_groups = {
     default = {
       min_size       = 2
       max_size       = 2
