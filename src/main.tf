@@ -27,7 +27,7 @@ module "eks" {
   cluster_name    = var.aws_eks_name
   cluster_version = var.aws_eks_version
 
-  enable_cluster_creator_admin_premissions = true
+  enable_cluster_creator_admin_permissions = true
 
   subnet_ids = module.vpc.private_subnets
   vpc_id     = module.vpc.private_subnets
