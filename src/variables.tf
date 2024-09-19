@@ -21,6 +21,12 @@ variable "aws_vpc_azs" {
   nullable = false
 }
 
+variable "aws_vpc_private_subnets" {
+  description = "Nome das subnets VPC privadas"
+  type = set(string)
+  nullable = false
+}
+
 variable "aws_vpc_public_subnets" {
   description = "Nome das subnets VPC publicas"
   type = set(string)
