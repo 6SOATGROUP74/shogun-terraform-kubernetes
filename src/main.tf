@@ -23,8 +23,6 @@ module "eks" {
   cluster_name    = var.aws_eks_name
   cluster_version = var.aws_eks_version
 
-  enable_cluster_creator_admin_permissions = true
-
   cluster_endpoint_public_access = true
 
   eks_managed_node_groups = {
