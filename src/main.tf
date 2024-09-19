@@ -9,7 +9,6 @@ module "vpc" {
   public_subnets  = var.aws_vpc_public_subnets
 
   enable_nat_gateway = true
-  enable_vpn_gateway = true
 
   tags = merge(var.aws_project_tags, { "kubernetes.io/cluster/${var.aws_eks_name}" = "shared" })
 
