@@ -21,8 +21,4 @@ resource "aws_eks_cluster" "shogun" {
   name     = "shogun_cluster"
   role_arn = var.node_role_arn
 
-
-  vpc_config {
-    subnet_ids = ["subnet-08b12ee2b94a5858c", "subnet-0a101f1266c9eac44", "subnet-0b4d0b0ab35c17f9b", "subnet-007d71cbdfb479ac0", "subnet-0c3fe33974de67d07", "subnet-0f31e291536aba412"]
-  }
 }
