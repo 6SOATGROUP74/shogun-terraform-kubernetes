@@ -10,7 +10,7 @@ variable "aws_eks_cluster_name" {
 
 variable "security_group_id" {
   type    = string
-  default = "sgr-0aff9a2bbf2bc8a80"
+  default = "sg-0f625f07685998413"
 }
 
 variable "node_group_name" {
