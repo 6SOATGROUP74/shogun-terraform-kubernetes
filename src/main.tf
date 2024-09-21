@@ -18,13 +18,13 @@ resource "aws_eks_cluster" "shogun_cluster" {
   role_arn = var.node_role_arn
 
   vpc_config {
-    subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id, aws_subnet.subnet_3.id, aws_subnet.subnet_4.id, aws_subnet.subnet_5.id]
+    subnet_ids         = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
     security_group_ids = [var.security_group_id]
   }
 }
 
 # Cria o node group
-resource "aws_eks_node_group" "aws_eks_shogun" {
+resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   depends_on = [
     aws_eks_cluster.shogun_cluster
@@ -48,13 +48,15 @@ resource "aws_eks_node_group" "aws_eks_shogun" {
 
 # Configura Fargate
 resource "aws_eks_fargate_profile" "example" {
+
   depends_on = [
-    aws_eks_cluster.shogun_cluster, aws_eks_node_group.aws_eks_shogun
+    aws_eks_cluster.shogun_cluster, aws_eks_node_group.aws_eks_node_group_shogun
   ]
-  cluster_name           =  var.aws_eks_cluster_name
-  fargate_profile_name   = "example"
+
+  cluster_name           = var.aws_eks_cluster_name
+  fargate_profile_name   = var.fargate_name
   pod_execution_role_arn = var.node_role_arn
-  subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id, aws_subnet.subnet_3.id, aws_subnet.subnet_4.id, aws_subnet.subnet_5.id]
+  subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   selector {
     namespace = "shogun"
