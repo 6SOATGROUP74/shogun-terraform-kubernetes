@@ -20,8 +20,8 @@ resource "aws_subnet" "subnet_2" {
 
 # Cria grupo de segurança VPC
 resource "aws_security_group" "shogun_grupo" {
-  name        = "shogun_grupo_de_seguranca"
-  description = "Grupo de segurança dos serviços Shogun"
+  name        = "Shogun grupo de seguranca"
+  description = "Grupo de seguranca dos servicos Shogun"
   vpc_id      = aws_vpc.shogun_vpc.id
 
 }
