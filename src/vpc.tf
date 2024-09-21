@@ -22,7 +22,7 @@ resource "aws_subnet" "subnet_2" {
 resource "aws_security_group" "shogun_grupo" {
   name        = "shogun_grupo_de_segurança"
   description = "Grupo de segurança dos serviços Shogun"
-  vpc_id      = aws_vpc.shogun_vpc
+  vpc_id      = aws_vpc.shogun_vpc.id
 
 }
 
