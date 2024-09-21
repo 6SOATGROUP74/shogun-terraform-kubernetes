@@ -23,11 +23,28 @@ resource "aws_eks_cluster" "shogun_cluster" {
   }
 }
 
+# Configura Fargate
+resource "aws_eks_fargate_profile" "eks_fargate" {
+
+  depends_on = [
+    aws_eks_cluster.shogun_cluster
+  ]
+
+  cluster_name           = var.aws_eks_cluster_name
+  fargate_profile_name   = var.fargate_name
+  pod_execution_role_arn = var.node_role_arn
+  subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
+
+  selector {
+    namespace = "shogun"
+  }
+}
+
 # Cria o node group
 resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   depends_on = [
-    aws_eks_cluster.shogun_cluster
+    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate
   ]
 
   cluster_name    = var.aws_eks_cluster_name
@@ -41,24 +58,5 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
     min_size     = 1
   }
 
-  update_config {
-    max_unavailable = 1
-  }
-}
-
-# Configura Fargate
-resource "aws_eks_fargate_profile" "eks_fargate" {
-
-  depends_on = [
-    aws_eks_cluster.shogun_cluster, aws_eks_node_group.aws_eks_node_group_shogun
-  ]
-
-  cluster_name           = var.aws_eks_cluster_name
-  fargate_profile_name   = var.fargate_name
-  pod_execution_role_arn = var.node_role_arn
-  subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
-
-  selector {
-    namespace = "shogun"
-  }
+instance_types = ["t3.medium"]
 }
