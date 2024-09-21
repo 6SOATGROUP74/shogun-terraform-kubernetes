@@ -24,6 +24,19 @@ resource "aws_security_group" "shogun_grupo" {
   description = "Grupo de seguranca dos servicos Shogun"
   vpc_id      = aws_vpc.shogun_vpc.id
 
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "ipv4_shogun" {

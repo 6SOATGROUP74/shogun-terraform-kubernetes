@@ -47,7 +47,7 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 }
 
 # Configura Fargate
-resource "aws_eks_fargate_profile" "example" {
+resource "aws_eks_fargate_profile" "eks_fargate" {
 
   depends_on = [
     aws_eks_cluster.shogun_cluster, aws_eks_node_group.aws_eks_node_group_shogun
