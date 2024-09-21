@@ -24,7 +24,12 @@ resource "aws_eks_cluster" "shogun_cluster" {
 }
 
 # Cria o node group
-resource "aws_eks_node_group" "example" {
+resource "aws_eks_node_group" "aws_eks_shogun" {
+
+  depends_on = [
+    aws_eks_cluster.shogun_cluster
+  ]
+
   cluster_name    = var.aws_eks_cluster_name
   node_group_name = var.node_group_name
   node_role_arn   = var.node_role_arn
@@ -43,6 +48,9 @@ resource "aws_eks_node_group" "example" {
 
 # Configura Fargate
 resource "aws_eks_fargate_profile" "example" {
+  depends_on = [
+    aws_eks_cluster.shogun_cluster, aws_eks_node_group.aws_eks_shogun
+  ]
   cluster_name           =  var.aws_eks_cluster_name
   fargate_profile_name   = "example"
   pod_execution_role_arn = var.node_role_arn
