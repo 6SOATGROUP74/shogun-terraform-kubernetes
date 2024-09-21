@@ -31,5 +31,5 @@ resource "aws_subnet" "subnet_4" {
 # Subnet 5
 resource "aws_subnet" "subnet_5" {
   vpc_id     = aws_vpc.shogun_vpc.id
-  cidr_block = "172.31.16.0/200"
+  cidr_block = "172.31.16.0/20"
 }
