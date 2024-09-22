@@ -17,5 +17,3 @@ variable "fargate_name" {
   type    = string
   default = "shogun_fargate"
 }
-
-variable "eks_subnet_ids" { }
