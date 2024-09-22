@@ -44,24 +44,28 @@ resource "aws_eks_addon" "addons" {
   for_each                 = {for addon in var.addons : addon.name => addon}
   cluster_name             = aws_eks_cluster.shogun_cluster.name
   addon_name               = each.value.name
-  addon_version            = "latest"
-  resolve_conflicts        = "PRESERVE"
+  addon_version            = each.value.version
+  resolve_conflicts_on_create = "OVERWRITE"
   service_account_role_arn = var.node_role_arn
 }
 
 variable "addons" {
   type = list(object({
     name = string
+    version = string
   }))
   default = [
     {
-      name = "kube-proxy"
+      name    = "kube-proxy"
+      version = "v1.31.0-eksbuild.3"
     },
     {
-      name = "vpc-cni"
+      name    = "vpc-cni"
+      version = "v1.18.3-eksbuild.3"
     },
     {
-      name = "coredns"
+      name    = "coredns"
+      version = "v1.11.1-eksbuild.8"
     }
   ]
 }
