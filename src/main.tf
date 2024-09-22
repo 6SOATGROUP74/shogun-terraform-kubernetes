@@ -57,7 +57,7 @@ variable "addons" {
   default = [
     {
       name    = "kube-proxy"
-      version = "v1.31.0-eksbuild.3"
+      version = "v1.30.0-eksbuild.3"
     },
     {
       name    = "vpc-cni"
@@ -65,7 +65,7 @@ variable "addons" {
     },
     {
       name    = "coredns"
-      version = "v1.11.1-eksbuild.8"
+      version = "v1.11.1-eksbuild.9"
     }
   ]
 }
