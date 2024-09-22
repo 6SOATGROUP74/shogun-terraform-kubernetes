@@ -39,11 +39,41 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
   }
 }
 
+# Adiciona recursos para gerenciar o cluster
+resource "aws_eks_addon" "addons" {
+  for_each          = { for addon in var.addons : addon.name => addon }
+  cluster_name      = aws_eks_cluster.shogun_cluster.name
+  addon_name        = each.value.name
+  addon_version     = each.value.version
+  resolve_conflicts = "OVERWRITE"
+}
+
+variable "addons" {
+  type = list(object({
+    name    = string
+    version = string
+  }))
+  default = [
+    {
+      name    = "kube-proxy"
+      version = "v1.30.0-eksbuild.3"
+    },
+    {
+      name    = "vpc-cni"
+      version = "v1.18.1-eksbuild.3"
+    },
+    {
+      name    = "coredns"
+      version = "v1.11.1-eksbuild.8"
+    }
+  ]
+}
+
 # Cria o node group
 resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   depends_on = [
-    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate
+    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate, aws_eks_addon.addons
   ]
 
   cluster_name    = var.aws_eks_cluster_name
