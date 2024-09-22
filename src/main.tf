@@ -39,7 +39,7 @@ resource "aws_iam_role" "fargate_shogun_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "shogun-AmazonEKSFargatePodExecutionRolePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  policy_arn = var.node_role_arn
   role       = aws_iam_role.fargate_shogun_role.name
 }
 
@@ -77,17 +77,17 @@ resource "aws_iam_role" "eks_shogun_node_group" {
 }
 
 resource "aws_iam_role_policy_attachment" "shogun-AmazonEKSWorkerNodePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  policy_arn = var.node_role_arn
   role       = aws_iam_role.eks_shogun_node_group.name
 }
 
 resource "aws_iam_role_policy_attachment" "shogun-AmazonEKS_CNI_Policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  policy_arn = var.node_role_arn
   role       = aws_iam_role.eks_shogun_node_group.name
 }
 
 resource "aws_iam_role_policy_attachment" "shogun-AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  policy_arn = var.node_role_arn
   role       = aws_iam_role.eks_shogun_node_group.name
 }
 
@@ -100,7 +100,7 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   cluster_name    = var.aws_eks_cluster_name
   node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.eks_shogun_node_group.arn
+  node_role_arn   = var.node_role_arn
   subnet_ids      = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   scaling_config {
