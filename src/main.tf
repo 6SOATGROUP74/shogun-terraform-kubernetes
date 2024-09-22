@@ -47,6 +47,11 @@ resource "aws_eks_addon" "addons" {
   addon_version            = each.value.version
   resolve_conflicts_on_create = "OVERWRITE"
   service_account_role_arn = var.node_role_arn
+
+  depends_on = [
+    aws_eks_cluster.shogun_cluster,
+    aws_eks_fargate_profile.eks_fargate
+  ]
 }
 
 variable "addons" {
@@ -57,7 +62,7 @@ variable "addons" {
   default = [
     {
       name    = "kube-proxy"
-      version = "v1.31.0-eksbuild.3"
+      version = "v1.30.0-eksbuild.3"
     },
     {
       name    = "vpc-cni"
@@ -65,7 +70,7 @@ variable "addons" {
     },
     {
       name    = "coredns"
-      version = "v1.11.1-eksbuild.8"
+      version = "v1.11.1-eksbuild.9"
     }
   ]
 }
