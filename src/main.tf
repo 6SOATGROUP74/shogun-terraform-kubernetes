@@ -19,7 +19,6 @@ resource "aws_eks_cluster" "shogun_cluster" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
-    security_group_ids = aws_security_group.shogun_grupo.id
   }
 }
 
