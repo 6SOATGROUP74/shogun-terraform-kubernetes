@@ -18,7 +18,7 @@ resource "aws_eks_cluster" "shogun_cluster" {
   role_arn = var.node_role_arn
 
   vpc_config {
-    subnet_ids         = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
+    subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
   }
 }
 
@@ -41,30 +41,27 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
 
 # Adiciona recursos para gerenciar o cluster
 resource "aws_eks_addon" "addons" {
-  for_each          = { for addon in var.addons : addon.name => addon }
-  cluster_name      = aws_eks_cluster.shogun_cluster.name
-  addon_name        = each.value.name
-  addon_version     = each.value.version
-  resolve_conflicts = "OVERWRITE"
+  for_each                 = {for addon in var.addons : addon.name => addon}
+  cluster_name             = aws_eks_cluster.shogun_cluster.name
+  addon_name               = each.value.name
+  addon_version            = "latest"
+  resolve_conflicts        = "PRESERVE"
+  service_account_role_arn = var.node_role_arn
 }
 
 variable "addons" {
   type = list(object({
-    name    = string
-    version = string
+    name = string
   }))
   default = [
     {
-      name    = "kube-proxy"
-      version = "v1.30.0-eksbuild.3"
+      name = "kube-proxy"
     },
     {
-      name    = "vpc-cni"
-      version = "v1.18.1-eksbuild.3"
+      name = "vpc-cni"
     },
     {
-      name    = "coredns"
-      version = "v1.11.1-eksbuild.8"
+      name = "coredns"
     }
   ]
 }
