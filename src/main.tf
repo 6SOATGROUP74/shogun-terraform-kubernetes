@@ -47,6 +47,11 @@ resource "aws_eks_addon" "addons" {
   addon_version            = each.value.version
   resolve_conflicts_on_create = "OVERWRITE"
   service_account_role_arn = var.node_role_arn
+
+  depends_on = [
+    aws_eks_cluster.shogun_cluster,
+    aws_eks_fargate_profile.eks_fargate
+  ]
 }
 
 variable "addons" {
