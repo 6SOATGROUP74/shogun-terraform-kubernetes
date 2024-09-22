@@ -14,8 +14,9 @@ terraform {
 
 # Cria o cluster do EKS
 resource "aws_eks_cluster" "shogun_cluster" {
-  name     = var.aws_eks_cluster_name
-  role_arn = var.node_role_arn
+  name                          = var.aws_eks_cluster_name
+  role_arn                      = var.node_role_arn
+  bootstrap_self_managed_addons = true
 
   vpc_config {
     subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
@@ -41,12 +42,12 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
 
 # Adiciona recursos para gerenciar o cluster
 resource "aws_eks_addon" "addons" {
-  for_each                 = {for addon in var.addons : addon.name => addon}
-  cluster_name             = aws_eks_cluster.shogun_cluster.name
-  addon_name               = each.value.name
-  addon_version            = each.value.version
+  for_each                    = {for addon in var.addons : addon.name => addon}
+  cluster_name                = aws_eks_cluster.shogun_cluster.name
+  addon_name                  = each.value.name
+  addon_version               = each.value.version
   resolve_conflicts_on_create = "OVERWRITE"
-  service_account_role_arn = var.node_role_arn
+  service_account_role_arn    = var.node_role_arn
 
   depends_on = [
     aws_eks_cluster.shogun_cluster,
@@ -56,7 +57,7 @@ resource "aws_eks_addon" "addons" {
 
 variable "addons" {
   type = list(object({
-    name = string
+    name    = string
     version = string
   }))
   default = [
@@ -79,7 +80,7 @@ variable "addons" {
 resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   depends_on = [
-    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate, aws_eks_addon.addons
+    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate
   ]
 
   cluster_name    = var.aws_eks_cluster_name
