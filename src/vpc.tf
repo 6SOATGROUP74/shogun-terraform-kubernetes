@@ -35,10 +35,6 @@ resource "aws_subnet" "personalerp-eks-subnet" {
   map_public_ip_on_launch = false
 }
 
-resource "aws_vpc" "personalerp_private_vpc" {
-  cidr_block = "10.0.0.0/16"
-}
-
 resource "aws_internet_gateway" "personalerp_internet_gateway" {
   vpc_id = aws_vpc.personalerp_private_vpc.id
 }
