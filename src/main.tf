@@ -80,7 +80,7 @@ variable "addons" {
 resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   depends_on = [
-    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate, aws_eks_addon.addons
+    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate
   ]
 
   cluster_name    = var.aws_eks_cluster_name
