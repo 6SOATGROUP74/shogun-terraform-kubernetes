@@ -23,26 +23,6 @@ resource "aws_eks_cluster" "shogun_cluster" {
   }
 }
 
-resource "aws_iam_role" "fargate_shogun_role" {
-  name = "fargate_shogun_role"
-
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "eks-fargate-pods.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "shogun-AmazonEKSFargatePodExecutionRolePolicy" {
-  policy_arn = var.node_role_arn
-  role       = aws_iam_role.fargate_shogun_role.name
-}
-
 # Configura Fargate
 resource "aws_eks_fargate_profile" "eks_fargate" {
 
@@ -52,43 +32,12 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
 
   cluster_name           = var.aws_eks_cluster_name
   fargate_profile_name   = var.fargate_name
-  pod_execution_role_arn = aws_iam_role.fargate_shogun_role.arn
+  pod_execution_role_arn = var.node_role_arn
   subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   selector {
     namespace = "shogun"
   }
-}
-
-# Roles do node group
-resource "aws_iam_role" "eks_shogun_node_group" {
-  name = "eks_shogun_node_group"
-
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "shogun-AmazonEKSWorkerNodePolicy" {
-  policy_arn = var.node_role_arn
-  role       = aws_iam_role.eks_shogun_node_group.name
-}
-
-resource "aws_iam_role_policy_attachment" "shogun-AmazonEKS_CNI_Policy" {
-  policy_arn = var.node_role_arn
-  role       = aws_iam_role.eks_shogun_node_group.name
-}
-
-resource "aws_iam_role_policy_attachment" "shogun-AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = var.node_role_arn
-  role       = aws_iam_role.eks_shogun_node_group.name
 }
 
 # Cria o node group
@@ -109,5 +58,9 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
     min_size     = 1
   }
 
-instance_types = ["t3.medium"]
+  update_config {
+    max_unavailable = 1
+  }
+
+  instance_types = ["t3.medium"]
 }
