@@ -24,10 +24,3 @@ resource "aws_subnet" "subnet_2" {
 resource "aws_internet_gateway" "shogun_gateway" {
   vpc_id = aws_vpc.shogun_vpc.id
 }
-
-# Cria grupo de segurança VPC
-resource "aws_security_group" "shogun_grupo" {
-  name        = "Shogun grupo de seguranca"
-  description = "Grupo de seguranca dos servicos Shogun"
-  vpc_id      = aws_vpc.shogun_vpc.id
-}
