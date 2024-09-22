@@ -19,7 +19,7 @@ resource "aws_eks_cluster" "shogun_cluster" {
   bootstrap_self_managed_addons = true
 
   vpc_config {
-    subnet_ids = var.eks_subnet_ids
+    subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
   cluster_name           = var.aws_eks_cluster_name
   fargate_profile_name   = var.fargate_name
   pod_execution_role_arn = var.node_role_arn
-  subnet_ids             = var.eks_subnet_ids
+  subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   selector {
     namespace = "shogun"
@@ -86,7 +86,7 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
   cluster_name    = var.aws_eks_cluster_name
   node_group_name = var.node_group_name
   node_role_arn   = var.node_role_arn
-  subnet_ids      = var.eks_subnet_ids
+  subnet_ids      = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
 
   scaling_config {
     desired_size = 1
