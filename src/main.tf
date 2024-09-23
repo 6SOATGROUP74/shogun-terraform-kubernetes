@@ -19,7 +19,7 @@ resource "aws_eks_cluster" "shogun_cluster" {
   bootstrap_self_managed_addons = true
 
   vpc_config {
-    subnet_ids = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
+    subnet_ids = ["subnet-0b4d0b0ab35c17f9b", "subnet-0c3fe33974de67d07"]
   }
 }
 
@@ -33,10 +33,10 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
   cluster_name           = var.aws_eks_cluster_name
   fargate_profile_name   = var.fargate_name
   pod_execution_role_arn = var.node_role_arn
-  subnet_ids             = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
+  subnet_ids = ["subnet-0b4d0b0ab35c17f9b", "subnet-0c3fe33974de67d07"]
 
   selector {
-    namespace = "shogun"
+    namespace = "app-pod"
   }
 }
 
