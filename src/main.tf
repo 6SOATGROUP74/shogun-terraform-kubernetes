@@ -76,27 +76,27 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
 #   ]
 # }
 
-# Cria o node group
-resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
-
-  depends_on = [
-    aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate
-  ]
-
-  cluster_name    = var.aws_eks_cluster_name
-  node_group_name = var.node_group_name
-  node_role_arn   = var.node_role_arn
-  subnet_ids      = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
-
-  scaling_config {
-    desired_size = 1
-    max_size     = 4
-    min_size     = 1
-  }
-
-  update_config {
-    max_unavailable = 1
-  }
-
-  instance_types = ["t3.medium"]
-}
+# # Cria o node group
+# resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
+#
+#   depends_on = [
+#     aws_eks_cluster.shogun_cluster, aws_eks_fargate_profile.eks_fargate
+#   ]
+#
+#   cluster_name    = var.aws_eks_cluster_name
+#   node_group_name = var.node_group_name
+#   node_role_arn   = var.node_role_arn
+#   subnet_ids      = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
+#
+#   scaling_config {
+#     desired_size = 1
+#     max_size     = 4
+#     min_size     = 1
+#   }
+#
+#   update_config {
+#     max_unavailable = 1
+#   }
+#
+#   instance_types = ["t3.medium"]
+# }
