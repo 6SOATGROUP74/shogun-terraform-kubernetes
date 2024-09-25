@@ -12,8 +12,3 @@ variable "node_group_name" {
   type    = string
   default = "shogun_node_group"
 }
-
-variable "fargate_name" {
-  type    = string
-  default = "shogun_fargate"
-}
