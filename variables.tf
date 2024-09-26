@@ -1,6 +1,7 @@
 variable "node_role_arn" {
   type      = string
   sensitive = true
+  default   = "arn:aws:iam::410052166411:role/LabRole"
 }
 
 variable "aws_eks_cluster_name" {
