@@ -33,7 +33,7 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   cluster_name    = local.cluster_name
   node_group_name = "group-shogun"
-  node_role_arn   = local.lab_role
+  node_role_arn   = "arn:aws:iam::207567779785:role/nodegroup"
   subnet_ids      = local.subnets
 
   scaling_config {
