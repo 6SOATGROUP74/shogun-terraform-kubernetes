@@ -16,7 +16,7 @@ terraform {
 # Cria o cluster do EKS
 resource "aws_eks_cluster" "shogun_cluster" {
   name                          = local.cluster_name
-  role_arn                      = "arn:aws:iam::207567779785:role/fiap-devops"
+  role_arn                      = local.lab_role
   bootstrap_self_managed_addons = true
 
   vpc_config {
@@ -33,7 +33,7 @@ resource "aws_eks_node_group" "aws_eks_node_group_shogun" {
 
   cluster_name    = local.cluster_name
   node_group_name = "group-shogun"
-  node_role_arn   = "local.lab_role"
+  node_role_arn   = "arn:aws:iam::207567779785:role/fiap-devops"
   subnet_ids      = local.subnets
 
   scaling_config {
